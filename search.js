@@ -142,26 +142,38 @@ function doSearch(index, type, query) {
 // We can build any elastic search query
 function buildQuery(term) {
 	return {
-				"match": {
-					"_all": {
-						"query": term,
-						"fuzziness": "AUTO",
-						"prefix_length" : 3,
-            "max_expansions": 50,
-						"boost": 1
-					}
-				}
-//				"match": {
-//					"brokerage": {
-//						"query": term,
-//						"fuzziness": "AUTO",
-//						"prefix_length" : 3,
-//            "max_expansions": 50,
-//						"boost": 1
-//						
-//					}
-//				
-//				}
+		// "match": {
+		// 	"_all": {
+		// 		"query": term,
+		// 		"fuzziness": "AUTO",
+		// 		"prefix_length" : 3,
+//         "max_expansions": 50,
+		// 		"boost": 1
+		// 	}
+		// }
+		"query": {
+		    "bool": {
+		      "should": [
+		        { "match": { 
+		            "brokerage":  {
+		              "query": "Century21",
+		              "boost": 1
+		        }}},
+		        { "match": { 
+		            "bio":  {
+		              "query": "Remax",
+		              "boost": 1
+		        }}},
+						{ "query_string" : {
+									"fields" : ["name.display"],
+									"query" : "John"+"~1", // ~1 indicates proximity search
+									"boost": 10 // adjust boost to change importance
+							}
+						
+						}
+		      ]
+		    }
+		  }
 
 //		"query_string" : {
 //        "fields" : ["profile.*"],
